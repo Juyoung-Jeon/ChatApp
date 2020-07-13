@@ -8,14 +8,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/tvChat"
         android:background="@drawable/chat_bubble"
         android:padding="10dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="5dp"/>
-<!--    padding 은 내부, margin 은 외부 여백  -->
+        android:layout_marginBottom="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="10dp"/>
+<!--    padding 은 내부, margin 은 외부 여백, End_toEndOf 로 오른쪽으로 보냄  -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

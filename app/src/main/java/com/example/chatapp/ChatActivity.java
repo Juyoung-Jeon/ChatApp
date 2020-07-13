@@ -66,7 +66,7 @@ public class ChatActivity extends AppCompatActivity {
 
         // specify an adapter (see also next example)
         String[] myDataset = {"test1", "test2", "test3", "test4"};
-        mAdapter = new MyAdapter(chatArrayList); // 어댑터 클래스도 구현 필요
+        mAdapter = new MyAdapter(chatArrayList, stEmail); // 어댑터 클래스도 구현 필요
         recyclerView.setAdapter(mAdapter);
 
         // 하위 데이터 받아오는 코드 from 파이어베이스 문서
