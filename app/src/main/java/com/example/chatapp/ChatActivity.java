@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import org.w3c.dom.Comment;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
 
@@ -32,6 +33,7 @@ public class ChatActivity extends AppCompatActivity {
     Button btnSend;
     String stEmail;
     FirebaseDatabase database; // 전역변수로 선언
+    ArrayList<Chat> chatArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         database = FirebaseDatabase.getInstance();
 
+        chatArrayList = new ArrayList<>(); // ArrayList 는 배열의 일종, chat 을 나열하기 위함
         stEmail = getIntent().getStringExtra("email"); // 메인으로부터 이메일 받아오는 코드
 
         Button btnFinish = findViewById(R.id.btnFinish);
@@ -63,7 +66,7 @@ public class ChatActivity extends AppCompatActivity {
 
         // specify an adapter (see also next example)
         String[] myDataset = {"test1", "test2", "test3", "test4"};
-        mAdapter = new MyAdapter(myDataset); // 어댑터 클래스도 구현 필요
+        mAdapter = new MyAdapter(chatArrayList); // 어댑터 클래스도 구현 필요
         recyclerView.setAdapter(mAdapter);
 
         // 하위 데이터 받아오는 코드 from 파이어베이스 문서
@@ -79,8 +82,8 @@ public class ChatActivity extends AppCompatActivity {
                 String stText = chat.getText();
                 Log.d(TAG, "stEmail: "+stEmail);
                 Log.d(TAG, "stText: "+stText);
-
-                // ...
+                chatArrayList.add(chat); // 리사이클러뷰에 챗 추가 위함
+                mAdapter.notifyDataSetChanged();
             }
 
             @Override
