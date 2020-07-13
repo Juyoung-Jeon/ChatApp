@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(MainActivity.this, "Login", Toast.LENGTH_SHORT).show(); <- 눌렀을 때 글자 보이게
-                String stEmail = etEmail.getText().toString(); // String 형태로 받아와 저장하겠다.
+                final String stEmail = etEmail.getText().toString(); // String 형태로 받아와 저장하겠다.
                 String stPassword = etPassword.getText().toString();
                 if(stEmail.isEmpty()){
                     Toast.makeText(MainActivity.this, "Please insert Email", Toast.LENGTH_LONG).show();
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                                     Log.d(TAG, "stUserEmail: "+stUserEmail+", stUserName : "+stUserName);
 
                                     Intent in = new Intent(MainActivity.this, ChatActivity.class);
+                                    in.putExtra("email",stEmail); // chat 액티비티로 이메일 넘겨주기 위함
                                     startActivity(in); // 클릭 시 인텐트 in 실행
 //                                    updateUI(user);
                                 } else {
