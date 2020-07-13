@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                                     String stUserName = user.getDisplayName();
                                     Log.d(TAG, "stUserEmail: "+stUserEmail+", stUserName : "+stUserName);
 
-                                    Intent in = new Intent(MainActivity.this, ChatActivity.class);
+                                    Intent in = new Intent(MainActivity.this, TabActivity.class); // TabActivity 로 넘김. 원래는 Main 으로 두는 게 좋음.
                                     in.putExtra("email",stEmail); // chat 액티비티로 이메일 넘겨주기 위함
                                     startActivity(in); // 클릭 시 인텐트 in 실행
 //                                    updateUI(user);
