@@ -7,11 +7,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class ChatActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     MyAdapter mAdapter; // 생성한 어댑터로 지정
     private RecyclerView.LayoutManager layoutManager;
+    EditText etText;
+    Button btnSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +29,8 @@ public class ChatActivity extends AppCompatActivity {
                 finish(); // 앱 종료 명령어
             }
         });
+        btnSend = findViewById(R.id.btnSend);
+        etText = findViewById(R.id.etText);
 
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
@@ -41,6 +47,13 @@ public class ChatActivity extends AppCompatActivity {
         mAdapter = new MyAdapter(myDataset); // 어댑터 클래스도 구현 필요
         recyclerView.setAdapter(mAdapter);
 
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String stText = etText.getText().toString();
+                Toast.makeText(ChatActivity.this, "MSG : "+stText, Toast.LENGTH_LONG).show();
+            }
+        });
 
 
     }

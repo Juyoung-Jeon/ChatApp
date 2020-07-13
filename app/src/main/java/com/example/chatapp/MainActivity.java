@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,7 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     EditText etEmail, etPassword; // 액티비티 내 다른 메서드에서도 쓸 수 있게함. 상단에 씀으로써. 아니면 메서드 안에서 final 로 설정 가능.
-
+    ProgressBar progressBar;
     private FirebaseAuth mAuth;
 
     @Override
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
+        progressBar = findViewById(R.id.progressBar);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -49,11 +51,12 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Please insert Password", Toast.LENGTH_LONG).show();
                     return;
                 }
-
+                progressBar.setVisibility(View.VISIBLE);
                 mAuth.signInWithEmailAndPassword(stEmail, stPassword)
                         .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
+                                progressBar.setVisibility(View.GONE); // onComplete 에 두어 로그인 완료 후 사라짐
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
                                     Log.d(TAG, "signInWithEmail:success");
@@ -96,12 +99,13 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Please insert Password", Toast.LENGTH_LONG).show();
                     return;
                 }
-
+                progressBar.setVisibility(View.VISIBLE);
 //                Toast.makeText(MainActivity.this, stEmail+",", Toast.LENGTH_SHORT).show(); // 제대로 불러왔는지 창으로 확인하기 위함
                 mAuth.createUserWithEmailAndPassword(stEmail, stPassword)
                         .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
+                                progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
                                     Log.d(TAG, "createUserWithEmail:success");
