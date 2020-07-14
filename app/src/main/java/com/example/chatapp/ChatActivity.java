@@ -138,6 +138,7 @@ public class ChatActivity extends AppCompatActivity {
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 String datetime = dateformat.format(c.getTime());
+
                 DatabaseReference myRef = database.getReference("message").child(datetime); // datetime 의 하위로 바꿈.
 
                 Hashtable<String, String> numbers

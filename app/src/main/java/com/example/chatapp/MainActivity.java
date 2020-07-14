@@ -19,12 +19,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Hashtable;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     EditText etEmail, etPassword; // 액티비티 내 다른 메서드에서도 쓸 수 있게함. 상단에 씀으로써. 아니면 메서드 안에서 final 로 설정 가능.
     ProgressBar progressBar;
     private FirebaseAuth mAuth;
+    FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance(); // db 초기화
 
         Button btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(new View.OnClickListener() { // 클릭 시 실행
@@ -119,6 +125,17 @@ public class MainActivity extends AppCompatActivity {
                                     Log.d(TAG, "createUserWithEmail:success");
                                     FirebaseUser user = mAuth.getCurrentUser();
 //                                    updateUI(user);
+
+                                    // 데이터베이스에 계정 저장 위함, chat activity 에서 따옴
+                                    DatabaseReference myRef = database.getReference("users").child(user.getUid()); // datetime 의 하위로 바꿈, uid 회원가입 시 유니크 아이디
+
+                                    Hashtable<String, String> numbers
+                                            = new Hashtable<String, String>();
+                                    numbers.put("email", user.getEmail());
+                                    Toast.makeText(MainActivity.this,"Register Success", Toast.LENGTH_LONG).show();
+
+                                    myRef.setValue(numbers); // 위에 numbers 는 이름에 불과
+
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Log.w(TAG, "createUserWithEmail:failure", task.getException());

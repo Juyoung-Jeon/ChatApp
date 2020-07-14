@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -27,6 +28,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.chatapp.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -40,15 +42,16 @@ import java.io.IOException;
         int REQUEST_EXTERNAL_STORAGE_PERMISSION = 1002;
 
     private NotificationsViewModel notificationsViewModel;
-
+    File localFile;
     ImageView ivUser; // 전역 변수 화
     private StorageReference mStorageRef;
     String stEmail;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        notificationsViewModel =
-                ViewModelProviders.of(this).get(NotificationsViewModel.class);
+//        notificationsViewModel =
+//                ViewModelProviders.of(this).get(NotificationsViewModel.class); 뷰모델 어려우니 주석
+
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
 //        final TextView textView = root.findViewById(R.id.text_notifications);
 //        notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -65,9 +68,9 @@ import java.io.IOException;
 
         mStorageRef = FirebaseStorage.getInstance().getReference(); // 이미지 업로드 위함
 
-        // 권한 요청 from 구글 문서
+        // 외부저장소 읽는 권한 요청 from 구글 문서
         if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.READ_EXTERNAL_STORAGE)
+                Manifest.permission.READ_EXTERNAL_STORAGE) // 이미지가 들어가 있는 곳
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Permission is not granted
@@ -97,9 +100,35 @@ import java.io.IOException;
             @Override
             public void onClick(View v) {
                 Intent in = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(in, REQUEST_IMAGE_CODE); // request code 는 여러 항목을 구별 위함
+                startActivityForResult(in, REQUEST_IMAGE_CODE); // request code 는 여러 Intent  구별 위함
             }
         });
+
+        // 이미지 다운로드 위함
+        try {
+            localFile = File.createTempFile("images", "jpg");
+            StorageReference riversRef = mStorageRef.child("users").child(stEmail).child("profile.jpg");
+
+            riversRef.getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            // Successfully downloaded data to local file
+                            // ...
+                            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath()); // 로컬 파일 가져옴
+                            ivUser.setImageBitmap(bitmap);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle failed download
+                    // ...
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return root;
     }
 
@@ -115,6 +144,8 @@ import java.io.IOException;
                 e.printStackTrace();
             }
 //            Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
+
+            // 업로드 위함
             StorageReference riversRef = mStorageRef.child("users").child(stEmail).child("profile.jpg");
 
             riversRef.putFile(image)
