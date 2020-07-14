@@ -3,7 +3,9 @@ package com.example.chatapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -66,6 +68,11 @@ public class MainActivity extends AppCompatActivity {
                                     String stUserEmail = user.getEmail();
                                     String stUserName = user.getDisplayName();
                                     Log.d(TAG, "stUserEmail: "+stUserEmail+", stUserName : "+stUserName);
+
+                                    SharedPreferences sharedPref = getSharedPreferences("shared", Context.MODE_PRIVATE); // 다른 데서 불러올 수 있게 shared 로 변경
+                                    SharedPreferences.Editor editor = sharedPref.edit();
+                                    editor.putString("email", stUserEmail);
+                                    editor.commit();
 
                                     Intent in = new Intent(MainActivity.this, TabActivity.class); // TabActivity 로 넘김. 원래는 Main 으로 두는 게 좋음.
                                     in.putExtra("email",stEmail); // chat 액티비티로 이메일 넘겨주기 위함
